@@ -6,9 +6,10 @@ export const BASE_URL = "http://localhost:9000";
 
 const App = () => {
 	const [data, setData] = useState([]);
+	const [filteredData, setFilterData] = useState([]);
 	const [loading, setLoading] = useState(false);
 	const [error, setError] = useState(null);
-
+	const [selectedBtn, setSelectedBtn] = useState("all");
 	useEffect(() => {
 		fetchFoodData();
 	}, []);
@@ -19,11 +20,57 @@ const App = () => {
 			const response = await fetch(BASE_URL);
 			const json = await response.json();
 			setData(json);
+			setFilterData(json);
 			setLoading(false);
 		} catch (error) {
 			setError("Unable to fetch data");
 		}
 	};
+
+	const searchFood = (e) => {
+		const searchValue = e.target.value;
+
+		if (searchValue === "") {
+			setFilterData(null);
+		}
+
+		const filter = data?.filter((food) =>
+			food.name.toLowerCase().includes(searchValue.toLowerCase())
+		);
+		setFilterData(filter);
+	};
+
+	const filterFood = (type) => {
+		if (type === "all") {
+			setFilterData(data);
+			setSelectedBtn("all");
+			return;
+		}
+		const filter = data?.filter((food) =>
+			food.type.toLowerCase().includes(type.toLowerCase())
+		);
+		setFilterData(filter);
+		setSelectedBtn(type);
+	};
+
+	const filterBtns = [
+		{
+			name: "All",
+			type: "all",
+		},
+		{
+			name: "Breakfast",
+			type: "breakfast",
+		},
+		{
+			name: "Lunch",
+			type: "lunch",
+		},
+		{
+			name: "Dinner",
+			type: "dinner",
+		},
+	];
 	if (error) return <div>{error}</div>;
 	if (loading) return <div>Loading....</div>;
 
@@ -37,17 +84,26 @@ const App = () => {
 						</h2>
 					</div>
 					<div className="search">
-						<input type="text" placeholder="Search Food..." />
+						<input
+							onChange={searchFood}
+							type="text"
+							placeholder="Search Food..."
+						/>
 					</div>
 				</TopContainer>
 				<FilterContainer>
-					<Button>All</Button>
-					<Button>Breakfast</Button>
-					<Button>Lunch</Button>
-					<Button>Dinner</Button>
+					{filterBtns.map((btn) => (
+						<Button
+							isSelected={selectedBtn === btn.type}
+							key={btn.name}
+							onClick={() => filterFood(btn.type)}
+						>
+							{btn.name}
+						</Button>
+					))}
 				</FilterContainer>
 			</Container>
-			<SearchResult data={data} BASE_URL={BASE_URL} />
+			<SearchResult data={filteredData} BASE_URL={BASE_URL} />
 		</>
 	);
 };
@@ -60,7 +116,7 @@ export const Container = styled.div`
 `;
 
 const TopContainer = styled.section`
-	min-height: 140px;
+	height: 140px;
 	display: flex;
 	justify-content: space-between;
 	padding: 16px;
@@ -70,20 +126,27 @@ const TopContainer = styled.section`
 			font-size: 35px;
 		}
 		span {
-			color: #bf8d0e;
+			color: #d6a11c;
 			font-size: 30px;
 		}
 	}
 	.search {
 		input {
 			background: transparent;
-			border: 1px solid #bf8d0e;
+			border: 1px solid #d6a11c;
 			border-radius: 5px;
 			color: white;
 			height: 40px;
 			font-size: 16px;
 			padding: 0 10px;
+			&::placeholder {
+				color: white;
+			}
 		}
+	}
+	@media (0< width <600px) {
+		flex-direction: column;
+		height: 120px;
 	}
 `;
 const FilterContainer = styled.section`
@@ -94,9 +157,14 @@ const FilterContainer = styled.section`
 `;
 
 export const Button = styled.button`
-	background-color: #bf8d0e;
+	background-color: ${({ isSelected }) => (isSelected ? "#a57909" : "#d6a11c")};
+	outline: 1px solid ${({ isSelected }) => (isSelected ? "white" : "#d6a11c")};
 	border-radius: 5px;
 	padding: 6px 12px;
 	border: 0;
 	color: white;
+	cursor: pointer;
+	&:hover {
+		background-color: #a57909;
+	}
 `;
