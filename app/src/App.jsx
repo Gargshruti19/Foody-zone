@@ -28,31 +28,33 @@ const App = () => {
 	if (loading) return <div>Loading....</div>;
 
 	return (
-		<Container>
-			<TopContainer>
-				<div className="logo">
-					<h2>
-						F<span>oo</span>dy Z<span>o</span>ne
-					</h2>
-				</div>
-				<div className="search">
-					<input type="text" placeholder="Search Food..." />
-				</div>
-			</TopContainer>
-			<FilterContainer>
-				<Button>All</Button>
-				<Button>Breakfast</Button>
-				<Button>Lunch</Button>
-				<Button>Dinner</Button>
-			</FilterContainer>
+		<>
+			<Container>
+				<TopContainer>
+					<div className="logo">
+						<h2>
+							F<span>oo</span>dy Z<span>o</span>ne
+						</h2>
+					</div>
+					<div className="search">
+						<input type="text" placeholder="Search Food..." />
+					</div>
+				</TopContainer>
+				<FilterContainer>
+					<Button>All</Button>
+					<Button>Breakfast</Button>
+					<Button>Lunch</Button>
+					<Button>Dinner</Button>
+				</FilterContainer>
+			</Container>
 			<SearchResult data={data} BASE_URL={BASE_URL} />
-		</Container>
+		</>
 	);
 };
 
 export default App;
 
-const Container = styled.div`
+export const Container = styled.div`
 	max-width: 1200px;
 	margin: 0 auto;
 `;
@@ -68,14 +70,14 @@ const TopContainer = styled.section`
 			font-size: 35px;
 		}
 		span {
-			color: yellow;
+			color: #bf8d0e;
 			font-size: 30px;
 		}
 	}
 	.search {
 		input {
 			background: transparent;
-			border: 1px solid yellow;
+			border: 1px solid #bf8d0e;
 			border-radius: 5px;
 			color: white;
 			height: 40px;
